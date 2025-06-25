@@ -1,0 +1,47 @@
+﻿@* Views/Shared/_Layout.cshtml *@
+@using System.Web.Optimization   <!-- helpers Styles.Render / Scripts.Render -->
+@using System.Web.Mvc            <!-- ViewBag, Url.Action, Html helpers     -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title – TaskManager</title>
+
+    <!-- Bootstrap 5 + utilidades (desde bundle local) -->
+    @Styles.Render("~/Content/bootstrap")
+
+    <!-- Hoja GLOBAL del sitio -->
+    @Styles.Render("~/Content/site")
+
+    <!-- Estilos específicos de cada vista (login.css, etc.) -->
+    @RenderSection("styles", required: false)
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-white">
+        <div class="container">
+
+            <!-- brand centrado -->
+            <a class="navbar-brand mx-auto"
+               href="@Url.Action("Index", "TaskItems")">
+                Gestor de tareas
+            </a>
+
+            @* Ejemplo de algo a la derecha:
+                <button class="btn btn-outline-secondary ms-auto">Salir</button> *@
+        </div>
+    </nav>
+
+
+    <main class="container">
+        @RenderBody()
+    </main>
+
+    <!-- jQuery + Bootstrap Bundle desde el bundle “lib” -->
+    @Scripts.Render("~/bundles/lib")
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

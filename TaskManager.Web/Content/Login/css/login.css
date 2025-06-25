@@ -1,0 +1,213 @@
+﻿/* -----------------------------------------------------------
+   Login · 3 neon-trails + logo + inputs con label flotante
+------------------------------------------------------------*/
+
+/* 0 · Envoltorio que aloja logo + tarjeta ------------------- */
+.login-card {
+    display: inline-block; /* ancho igual a la tarjeta   */
+    position: relative; /* ancla absoluta del logo    */
+}
+
+/* 1 · Logotipo ---------------------------------------------- */
+.login-logo {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 140px; /*  se controla con width; SVG escala perfecto  */
+    height: auto;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* 2 · Tarjeta ------------------------------------------------ */
+.login-box {
+    position: relative;
+    width: 100%;
+    min-width: 380px; /* evita que se encoja en móvil */
+    max-width: 380px;
+    height: 450px;
+    background: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    overflow: hidden; /* recorta estelas, no el logo */
+    padding: 10px;
+}
+
+    /* 3 · Tres líneas animadas ---------------------------------- */
+    .login-box::before,
+    .login-box::after,
+    .login-box > .login-line3 {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 380px;
+        height: 420px;
+        transform-origin: bottom right;
+        animation: spinTrail 6s linear infinite;
+        z-index: 1;
+    }
+
+    /* roja */
+    .login-box::before {
+        background: linear-gradient(0deg,transparent,transparent,#cb3333,#cb3333,#cb3333);
+    }
+    /* azul oscuro */
+    .login-box::after {
+        background: linear-gradient(0deg,transparent,transparent,#201747,#201747,#201747);
+        animation-delay: -2s;
+    }
+    /* celeste */
+    .login-box > .login-line3 {
+        background: linear-gradient(0deg,transparent,transparent,#06559b,#06559b,#06559b);
+        animation-delay: -4s;
+    }
+
+@keyframes spinTrail {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 4 · interior */
+.login-box form {
+    position: absolute;
+    inset: 4px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 110px 40px 50px; /* hueco bajo el logo */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+}
+
+.login-box h5 {
+    font-weight: 50;
+    
+}
+
+/* 5 · inputs con label flotante e icono ───────────────────── */
+.form-outline {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1.4rem;
+}
+
+.form-control,
+.form-select {
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    height: 42px;
+    line-height: 42px;
+    /* ‼️ padding SIMÉTRICO izquierda/derecha */
+    padding: .6rem 2.3rem .6rem 2.3rem; /* ← antes era 0.8rem */
+
+    border: 2px solid #06559b;
+    border-radius: 4px;
+    font-size: .9rem;
+    background: #fff;
+    text-align: center;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #06559b;
+        outline: 0;
+        text-align: center; /* mantiene centrado al escribir */
+    }
+
+/* etiqueta flotante (ya estaba centrada) -------------------- */
+.form-label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    font-size: .75rem;
+    color: #06559b;
+    transition: .2s;
+    pointer-events: none;
+}
+
+.form-control:focus + .form-label,
+.form-control:not(:placeholder-shown) + .form-label,
+.form-select:focus + .form-label,
+.form-select:not([value=""]) + .form-label {
+    top: -.6rem;
+    transform: translateX(-50%);
+    font-size: .66rem;
+    color: #06559b;
+    background: #fff;
+    padding: 0 .3rem;
+}
+
+
+
+/* 6 · enlaces + botón */
+.login-links {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: .75rem;
+    margin-top: -15px;
+    margin-bottom: 30px;
+}
+
+    .login-links a {
+        color: #000;
+        text-decoration: none
+    }
+
+        .login-links a:hover {
+            color: #06559b
+        }
+
+/* botón “Continuar” */
+.btn-neon {
+    width: 100%;
+    max-width: 100px;
+    padding: .45rem 0;
+    border: none;
+    border-radius: 4px;
+    background: #201747; /* color base            */
+    color: #fff;
+    font-weight: 400; /* ya lo habías adelgazado */
+    cursor: pointer;
+    transition: background .25s ease, transform .15s; /* animación suave */
+}
+
+    /* ─── efecto al pasar el cursor ───────────────────────────── */
+    .btn-neon:hover {
+        background: #06559b; /* tono más claro o el que prefieras          */
+    }
+
+    /* ─── efecto al hacer clic (opcional) ─────────────────────── */
+    .btn-neon:active {
+        background: #1a154c; /* un poquito más oscuro                      */
+    }
+
+#creds-error {
+    /* quita estilos de .alert-danger que no necesitas */
+    background: transparent; /* sin fondo */
+    border: none; /* sin borde     */
+    padding: 0; /* sin relleno   */
+    /* tipografía */
+    color: #cb3333; /* mismo rojo que tu línea animada   */
+    font-weight: 600; /* un poco más grueso (opcional)     */
+    font-size: 0.9rem; /* ligeramente más grande (opcional) */
+    /* disposición */
+    width: 100%; /* ocupa todo el ancho del form      */
+    text-align: center; /* siempre centrado                  */
+    margin-top: 10px;
+}
+
+
+/* 7 · móvil */
+@media(max-width:400px) {
+    .login-box {
+        min-width: 300px; /* evita que se encoja en móvil */
+        max-width: 300px;
+    }
+}

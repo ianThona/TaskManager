@@ -1,0 +1,92 @@
+@* -------------------------------------------------------------
+       Views/Login/Login.cshtml
+       Login con bordes animados + logotipo centrado
+    -------------------------------------------------------------- *@
+@using System.Linq
+@model TaskManager.Web.Models.LoginViewModel
+
+@{
+    ViewBag.Title = "Iniciar sesión";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles {
+    @Styles.Render("~/Content/login-css")
+}
+
+<div class="center-full">
+    <div class="login-card">
+
+        <img src="@Url.Content("~/Content/images/thona_login.svg")"
+             alt="TaskManager logo"
+             class="login-logo" />
+
+        <div class="login-box">
+            <span class="login-line3"></span>
+
+            @using (Html.BeginForm("Login", "Login", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <h5 class="mb-3">Iniciar sesión</h5>
+
+                <!-- USERNAME -->
+                <div class="form-outline">
+                    <input id="Username"
+                           name="Username"
+                           type="text"
+                           class="form-control"
+                           placeholder=" "
+                           value="@Model.Username"
+                           required />
+                    <label for="Username" class="form-label">Username</label>
+                    <i class="fas fa-user input-icon"></i>
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="form-outline">
+                    @Html.PasswordFor(m => m.Password, new
+               {
+                   @class = "form-control",
+                   id = "Password",
+                   placeholder = " "
+               })
+                    <label for="Password" class="form-label">Password</label>
+                    <i class="fas fa-lock input-icon"></i>
+                </div>
+
+                <!-- Enlaces -->
+                <div class="login-links mb-3 w-100">
+                    <a href="#">¿Olvidaste tu contraseña?</a>
+                    <a href="#">Regístrate</a>
+                </div>
+
+                <!-- …dentro de .login-box, justo antes del botón -->
+
+                <!-- botón centrado -->
+                <input type="submit"
+                       id="login-submit"
+                       class="btn-neon d-block mx-auto mb-2"
+                       value="Continuar" />
+
+                <!-- mensaje debajo -->
+                <div id="creds-error"
+                     class="alert alert-danger text-center d-none mb-3">
+                    Usuario o contraseña incorrectos
+                </div>
+
+
+
+
+            }   @* ← cierre del bloque @using *@
+
+        </div><!-- /.login-box -->
+    </div><!-- /.login-card -->
+</div>
+
+@section scripts {
+    <script>
+        window.userPass = @Html.Raw(ViewBag.UserPassJson ?? "{}");
+    </script>
+    @Scripts.Render("~/bundles/login-js")
+}

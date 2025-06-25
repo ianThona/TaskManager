@@ -1,0 +1,30 @@
+/* tipografía por defecto para todo el sitio */
+body {
+    font-family: "Poppins",sans-serif;
+    background: #fff;
+}
+
+/* clase utilitaria para centrar vertical y horizontal */
+.center-full {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* enlaces genéricos */
+a {
+    color: #000;
+    text-decoration: none
+}
+
+    a:hover {
+        color: blue
+    }
+
+.navbar-white {
+    background: #F9FAFB; /* gris 97 %: se ve “blanco”, pero baja brillo */
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
