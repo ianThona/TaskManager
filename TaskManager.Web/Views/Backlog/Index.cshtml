@@ -1,5 +1,281 @@
+﻿@* ------------------------------------------------------------------------
+    File : Views/Backlog/Index.cshtml
+    Módulo: Backlog – lista, alta y edición de tareas
+    --------------------------------------------------------------------- *@
+@using System.Collections.Generic
+@using System.Web                    <!-- para JavaScriptStringEncode -->
+@using TaskManager.Web.Models
+
 @{
     ViewBag.Title = "Backlog";
     Layout = "~/Views/Shared/_LayoutApp.cshtml";
+    var tareas = ViewBag.Tasks as IEnumerable<Task>;
 }
-<h1 class="mt-4">Backlog</h1>
+
+@section styles {
+    @Styles.Render("~/Content/backlog-css")
+}
+
+<h3 class="mt-5 text-center">Seguimiento de tareas</h3>
+<h4 class="mt-4 text-center">Filtros</h4>
+
+<!-- ▸ Filtros -->
+<div class="container mt-4">
+    <div class="row g-3 justify-content-center">
+        <div class="col-12 col-md-3">
+            <div class="form-outline">
+                <input id="Titulo" class="form-control" type="text" placeholder=" " autocomplete="off" />
+                <label for="Titulo" class="form-label">Título</label>
+                <i class="fa-solid fa-magnifying-glass input-icon"></i>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="form-outline">
+                <select id="Estatus" class="form-select">
+                    <option value="" selected hidden></option>
+                    <option value="Por hacer">Por hacer</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Stopper">Stopper</option>
+                    <option value="Completado">Completado</option>
+                </select>
+                <label for="Estatus" class="form-label">Estado</label>
+                <i class="fa-solid fa-tag input-icon"></i>
+                <i class="fa-solid fa-chevron-down select-caret"></i>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="form-outline">
+                <input id="Fecha" class="form-control form-date" type="date" placeholder=" " />
+                <label for="Fecha" class="form-label">Fecha vencimiento</label>
+                <i class="fa-regular fa-calendar-days input-icon calendar"></i>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <button id="btnFilter" type="button" class="btn-neon w-100">Buscar</button>
+        </div>
+    </div>
+</div>
+
+<!-- ▸ Disparador “Crear nueva tarea” -->
+<h4 class="mt-4 text-center section-title"
+    data-bs-toggle="modal" data-bs-target="#crearTareaModal">
+    <i class="fa-solid fa-plus icon-plus"></i>
+    Crear nueva tarea
+</h4>
+
+<!-- ▸ Tabla de tareas -->
+<div class="container-fluid px-0 mt-4">
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="table table-custom" id="tasksTable">
+                <colgroup>
+                    <col style="width:100px" />
+                    <col />
+                    <col style="width:50px" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Título</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyTasks">
+                    @foreach (var t in tareas ?? new List<Task>())
+                    {
+                        var tituloEsc = HttpUtility.JavaScriptStringEncode(t.Titulo);
+                        var descrEsc = HttpUtility.JavaScriptStringEncode(t.Descripcion ?? "");
+                        var fAsig = t.Asignacion.ToString("yyyy-MM-dd");
+                        var fVto = t.Vencimiento.ToString("yyyy-MM-dd");
+                        var estadoEsc = HttpUtility.JavaScriptStringEncode(t.Estado ?? "");
+                        <tr id="row-@t.IdTask"
+                            data-estado="@estadoEsc"
+                            data-vencimiento="@fVto">
+                            <td>@t.IdTask</td>
+                            <td>@t.Titulo</td>
+                            <td class="text-center">
+                                <div class="dropdown-container">
+                                    <i class="fa-solid fa-ellipsis-vertical icon-applied"
+                                       onclick="toggleDropdown(event,this)"></i>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="javascript:void(0);"
+                                               onclick="verTarea('@tituloEsc','@descrEsc','@fAsig','@fVto','@estadoEsc')">
+                                                Ver tarea
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);"
+                                               onclick="editarTarea(@t.IdTask,'@tituloEsc','@descrEsc','@fAsig','@fVto','@estadoEsc')">
+                                                Editar
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);"
+                                               onclick="deleteRow(@t.IdTask)">
+                                                Eliminar
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ▸ Modales Crear / Ver / Editar -->
+<div class="modal fade" id="crearTareaModal" tabindex="-1" aria-labelledby="crearTareaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <form id="formCrearTarea" data-action="@Url.Action("Create","Backlog")">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="crearTareaLabel">
+                        <i class="fa-solid fa-plus me-2"></i>Crear nueva tarea
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="crearTareaError" class="alert alert-danger d-none"></div>
+                    <div class="form-outline mb-3">
+                        <input id="TituloNueva" name="Titulo" class="form-control" placeholder=" " required />
+                        <label for="TituloNueva" class="form-label">Título</label>
+                    </div>
+                    <div class="form-outline mb-3">
+                        <textarea id="DescripcionNueva" name="Descripcion" rows="3"
+                                  class="form-control form-textarea" placeholder=" "></textarea>
+                        <label for="DescripcionNueva" class="form-label">Descripción</label>
+                    </div>
+                    <input type="date" id="FechaAsignacion"
+                           class="form-control form-date fecha-asignacion" />
+                    <div class="form-outline mb-3">
+                        <input type="date" id="FechaVencimientoNueva" name="Vencimiento"
+                               class="form-control form-date" placeholder=" " required />
+                        <label for="FechaVencimientoNueva" class="form-label">
+                            Fecha de vencimiento
+                        </label>
+                        <i class="fa-regular fa-calendar-days input-icon calendar"></i>
+                    </div>
+                    <div class="form-outline mb-3">
+                        <select id="EstadoNueva" name="Estado" class="form-select" required>
+                            <option value="" selected hidden></option>
+                            <option value="Por hacer">Por hacer</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Stopper">Stopper</option>
+                            <option value="Completado">Completado</option>
+                        </select>
+                        <label for="EstadoNueva" class="form-label">Estado</label>
+                        <i class="fa-solid fa-chevron-down select-caret"></i>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="submit" class="btn-neon btn-lg">Crear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="verTareaModal" tabindex="-1" aria-labelledby="verTareaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="verTareaLabel">
+                    <i class="fa-solid fa-eye me-2"></i>Ver tarea
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-outline mb-3">
+                    <input id="verTitulo" class="form-control" readonly />
+                    <label class="form-label">Título</label>
+                </div>
+                <div class="form-outline mb-3">
+                    <textarea id="verDescripcion" rows="3"
+                              class="form-control form-textarea" readonly></textarea>
+                    <label class="form-label">Descripción</label>
+                </div>
+                <div class="form-outline mb-3">
+                    <input id="verFechaAsig" class="form-control form-date" readonly />
+                    <label class="form-label">Fecha de asignación</label>
+                </div>
+                <div class="form-outline mb-3">
+                    <input id="verFechaVto" class="form-control form-date" readonly />
+                    <label class="form-label">Fecha de vencimiento</label>
+                </div>
+                <div class="form-outline mb-3">
+                    <input id="verEstado" class="form-control" readonly />
+                    <label class="form-label">Estado</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editarTareaModal" tabindex="-1" aria-labelledby="editarTareaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <form id="formEditarTarea" data-action="@Url.Action("Update","Backlog")">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarTareaLabel">
+                        <i class="fa-solid fa-pen-to-square me-2"></i>Editar tarea
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="editarTareaError" class="alert alert-danger d-none"></div>
+                    <input type="hidden" id="IdEditar" name="IdTask" />
+                    <div class="form-outline mb-3">
+                        <input id="TituloEditar" name="Titulo" class="form-control" placeholder=" " required />
+                        <label for="TituloEditar" class="form-label">Título</label>
+                    </div>
+                    <div class="form-outline mb-3">
+                        <textarea id="DescripcionEditar" name="Descripcion" rows="3"
+                                  class="form-control form-textarea" placeholder=" "></textarea>
+                        <label for="DescripcionEditar" class="form-label">Descripción</label>
+                    </div>
+                    <input type="date" id="FechaAsignacionEditar" name="Asignacion"
+                           class="form-control form-date fecha-asignacion mb-3" />
+                    <div class="form-outline mb-3">
+                        <input type="date" id="FechaVencimientoEditar" name="Vencimiento"
+                               class="form-control form-date" placeholder=" " required />
+                        <label for="FechaVencimientoEditar" class="form-label">
+                            Fecha de vencimiento
+                        </label>
+                        <i class="fa-regular fa-calendar-days input-icon calendar"></i>
+                    </div>
+                    <div class="form-outline mb-3">
+                        <select id="EstadoEditar" name="Estado" class="form-select" required>
+                            <option value="" selected hidden></option>
+                            <option value="Por hacer">Por hacer</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Stopper">Stopper</option>
+                            <option value="Completado">Completado</option>
+                        </select>
+                        <label for="EstadoEditar" class="form-label">Estado</label>
+                        <i class="fa-solid fa-chevron-down select-caret"></i>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="submit" class="btn-neon btn-lg">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* — Token antiforgery global + URL para deleteRow() — *@
+@Html.AntiForgeryToken()
+<script>
+  const deleteUrl = '@Url.Action("Delete","Backlog")';
+</script>
+
+@section scripts {
+    @* Cargamos el bundle que contiene todo el backlog.js actualizado *@
+    @Scripts.Render("~/bundles/backlog-js")
+}

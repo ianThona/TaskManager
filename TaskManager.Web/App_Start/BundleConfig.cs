@@ -1,55 +1,75 @@
-﻿/*  App_Start/BundleConfig.cs  */
-
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 
 namespace TaskManager.Web
 {
     public static class BundleConfig
     {
-        /// <summary>
-        /// Registra todos los bundles de hojas de estilo y JavaScript.
-        /// Llamar desde Global.asax → Application_Start().
-        /// </summary>
         public static void RegisterBundles(BundleCollection bundles)
         {
-            /*------------------------------------------------------------
-             *  1 · Librerías JS compartidas
-             *-----------------------------------------------------------*/
-            bundles.Add(new ScriptBundle("~/bundles/lib")
-                .Include("~/Scripts/jquery-3.7.1.js",
-                         "~/Scripts/bootstrap.bundle.js"));   // incluye Popper
+            /* 1 · Bundle con librerías JS comunes */
+            bundles.Add(
+                new ScriptBundle("~/bundles/lib")
+                    .Include(
+                        "~/Scripts/jquery-{version}.js",
+                        "~/Scripts/bootstrap.bundle.min.js"
+                    )
+            );
 
-            /*------------------------------------------------------------
-             *  2 · Estilos globales (Bootstrap + site.css)
-             *-----------------------------------------------------------*/
-            bundles.Add(new StyleBundle("~/Content/bootstrap")
-                .Include("~/Content/bootstrap.min.css"));
+            /* 2 · CSS global */
+            bundles.Add(
+                new StyleBundle("~/Content/bootstrap")
+                    .Include("~/Content/bootstrap.min.css")
+            );
+            bundles.Add(
+                new StyleBundle("~/Content/site")
+                    .Include("~/Content/site.css")
+            );
 
-            bundles.Add(new StyleBundle("~/Content/site")
-                .Include("~/Content/site.css"));
+            /* 3 · Login */
+            bundles.Add(
+                new StyleBundle("~/Content/login-css")
+                    .Include("~/Content/Login/css/login.css")
+            );
+            bundles.Add(
+                new ScriptBundle("~/bundles/login-js")
+                    .Include("~/Content/Login/js/login.js")
+            );
 
-            /*------------------------------------------------------------
-             *  3 · Página de Login  (CSS y JS propios)
-             *-----------------------------------------------------------*/
-            bundles.Add(new StyleBundle("~/Content/login-css")
-                .Include("~/Content/Login/css/login.css"));
+            /* 4 · Side-menu */
+            bundles.Add(
+                new StyleBundle("~/Content/sideMenu-css")
+                    .Include("~/Content/SideMenu/css/sideMenu.css")
+            );
+            bundles.Add(
+                new ScriptBundle("~/bundles/sideMenu-js")
+                    .Include("~/Content/SideMenu/js/sideMenu.js")
+            );
 
-            bundles.Add(new ScriptBundle("~/bundles/login-js")
-                .Include("~/Content/Login/js/login.js"));
+            /* 5 · Backlog */
+            bundles.Add(
+                new StyleBundle("~/Content/backlog-css")
+                    .Include("~/Content/Backlog/css/backlog.css")
+            );
+            bundles.Add(
+                new ScriptBundle("~/bundles/backlog-js")
+                    .Include("~/Content/Backlog/js/backlog.js")
+            );
 
-            /*------------------------------------------------------------
-             *  4 · Side-menu (Backlog / Kanban board)
-             *-----------------------------------------------------------*/
-            bundles.Add(new StyleBundle("~/Content/sideMenu-css")
-                .Include("~/Content/SideMenu/css/sideMenu.css"));
+            /* 6 · KanbanBoard */
+            bundles.Add(
+                new StyleBundle("~/Content/kanbanBoard-css")
+                    .Include("~/Content/KanbanBoard/css/kanbanBoard.css")
+            );
+            bundles.Add(
+                new ScriptBundle("~/bundles/kanbanBoard-js")
+                    .Include("~/Content/KanbanBoard/js/kanbanBoard.js")
+            );
 
-            bundles.Add(new ScriptBundle("~/bundles/sideMenu-js")
-                .Include("~/Content/SideMenu/js/sideMenu.js"));
-
-            /*------------------------------------------------------------
-             *  5 · Optimización siempre activa
-             *-----------------------------------------------------------*/
-            BundleTable.EnableOptimizations = true;
+#if DEBUG
+            BundleTable.EnableOptimizations = false;  // No minificar en Debug
+#else
+            BundleTable.EnableOptimizations = true;   // Sí minificar en Release
+#endif
         }
     }
 }

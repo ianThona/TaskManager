@@ -114,7 +114,8 @@ body {
     text-align: center;
     padding: 10px 0 20px;
     z-index: 1200;
-    transform: translateX(30px);
+    transform: translateX(32px);
+    margin-top: 16px;
 }
 
     #topbar .user-menu.show {
