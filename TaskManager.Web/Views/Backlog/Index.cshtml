@@ -268,6 +268,22 @@
         </div>
     </div>
 </div>
+<div class="container-fluid px-0 mt-4">
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="table table-custom" id="tasksTable">
+                <!-- … tu código de filas … -->
+            </table>
+        </div>
+
+        <!-- ▸ Botón al final de la tabla -->
+        <div class="d-flex justify-content-end mt-3">
+            <button id="btnAccionExtra" type="button" class="btn-neon">
+                Acción Extra
+            </button>
+        </div>
+    </div>
+</div>
 
 @* — Token antiforgery global + URL para deleteRow() — *@
 @Html.AntiForgeryToken()
