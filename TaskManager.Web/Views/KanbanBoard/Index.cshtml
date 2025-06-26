@@ -1,5 +1,167 @@
+﻿@model IEnumerable<TaskManager.Web.Models.Task>
+@using System.Web                     <!-- para JavaScriptStringEncode -->
 @{
     ViewBag.Title = "Kanban board";
     Layout = "~/Views/Shared/_LayoutApp.cshtml";
 }
-<h1 class="mt-4">Kanban board</h1>
+
+@section styles {
+    @Styles.Render("~/Content/kanbanBoard-css")
+}
+
+<h3 class="mt-5 text-center">Tablero kanban</h3>
+
+<div class="kanban-board">
+    <div class="container mt-4">
+        <div class="row g-3">
+
+            @* Columna “Por hacer” *@
+            <div class="col-12 col-md-3 kanban-column">
+                <h4 class="text-center">Por hacer</h4>
+                @foreach (var t in Model.Where(x => x.Estado == "Por hacer"))
+                {
+                    var tituloEsc = HttpUtility.JavaScriptStringEncode(t.Titulo);
+                    var descrEsc = HttpUtility.JavaScriptStringEncode(t.Descripcion ?? "");
+                    var fAsig = t.Asignacion.ToString("yyyy-MM-dd");
+                    var fVto = t.Vencimiento.ToString("yyyy-MM-dd");
+                    var estadoEsc = HttpUtility.JavaScriptStringEncode(t.Estado ?? "");
+                    <div class="card kanban-card mb-2"
+                         style="background-color: #0d6efd; color: white;"
+                         data-titulo="@tituloEsc"
+                         data-descripcion="@descrEsc"
+                         data-asignacion="@fAsig"
+                         data-vencimiento="@fVto"
+                         data-estado="@estadoEsc">
+                        <div class="card-body">
+                            <h5 class="card-title">@t.Titulo</h5>
+                            <p class="card-text"><small>ID: @t.IdTask</small></p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @* Columna “Pendiente” *@
+            <div class="col-12 col-md-3 kanban-column">
+                <h4 class="text-center">Pendiente</h4>
+                @foreach (var t in Model.Where(x => x.Estado == "Pendiente"))
+                {
+                    var tituloEsc = HttpUtility.JavaScriptStringEncode(t.Titulo);
+                    var descrEsc = HttpUtility.JavaScriptStringEncode(t.Descripcion ?? "");
+                    var fAsig = t.Asignacion.ToString("yyyy-MM-dd");
+                    var fVto = t.Vencimiento.ToString("yyyy-MM-dd");
+                    var estadoEsc = HttpUtility.JavaScriptStringEncode(t.Estado ?? "");
+                    <div class="card kanban-card mb-2"
+                         style="background-color: #0d6efd; color: white;"
+                         data-titulo="@tituloEsc"
+                         data-descripcion="@descrEsc"
+                         data-asignacion="@fAsig"
+                         data-vencimiento="@fVto"
+                         data-estado="@estadoEsc">
+                        <div class="card-body">
+                            <h5 class="card-title">@t.Titulo</h5>
+                            <p class="card-text"><small>ID: @t.IdTask</small></p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @* Columna “Stopper” *@
+            <div class="col-12 col-md-3 kanban-column">
+                <h4 class="text-center">Stopper</h4>
+                @foreach (var t in Model.Where(x => x.Estado == "Stopper"))
+                {
+                    var tituloEsc = HttpUtility.JavaScriptStringEncode(t.Titulo);
+                    var descrEsc = HttpUtility.JavaScriptStringEncode(t.Descripcion ?? "");
+                    var fAsig = t.Asignacion.ToString("yyyy-MM-dd");
+                    var fVto = t.Vencimiento.ToString("yyyy-MM-dd");
+                    var estadoEsc = HttpUtility.JavaScriptStringEncode(t.Estado ?? "");
+                    <div class="card kanban-card mb-2"
+                         style="background-color: #0d6efd; color: white;"
+                         data-titulo="@tituloEsc"
+                         data-descripcion="@descrEsc"
+                         data-asignacion="@fAsig"
+                         data-vencimiento="@fVto"
+                         data-estado="@estadoEsc">
+                        <div class="card-body">
+                            <h5 class="card-title">@t.Titulo</h5>
+                            <p class="card-text"><small>ID: @t.IdTask</small></p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @* Columna “Completado” *@
+            <div class="col-12 col-md-3 kanban-column">
+                <h4 class="text-center">Completado</h4>
+                @foreach (var t in Model.Where(x => x.Estado == "Completado"))
+                {
+                    var tituloEsc = HttpUtility.JavaScriptStringEncode(t.Titulo);
+                    var descrEsc = HttpUtility.JavaScriptStringEncode(t.Descripcion ?? "");
+                    var fAsig = t.Asignacion.ToString("yyyy-MM-dd");
+                    var fVto = t.Vencimiento.ToString("yyyy-MM-dd");
+                    var estadoEsc = HttpUtility.JavaScriptStringEncode(t.Estado ?? "");
+                    <div class="card kanban-card mb-2"
+                         style="background-color: #0d6efd; color: white;"
+                         data-titulo="@tituloEsc"
+                         data-descripcion="@descrEsc"
+                         data-asignacion="@fAsig"
+                         data-vencimiento="@fVto"
+                         data-estado="@estadoEsc">
+                        <div class="card-body">
+                            <h5 class="card-title">@t.Titulo</h5>
+                            <p class="card-text"><small>ID: @t.IdTask</small></p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@* — Modal “Ver tarea” copiado de Backlog — *@
+<div class="modal fade" id="verTareaModal" tabindex="-1" aria-labelledby="verTareaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="verTareaLabel">
+                    <i class="fa-solid fa-eye me-2"></i>Ver tarea
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-outline mb-3">
+                    <input id="verTitulo" class="form-control" readonly />
+                    <label class="form-label">Título</label>
+                </div>
+                <div class="form-outline mb-3">
+                    <textarea id="verDescripcion" rows="3"
+                              class="form-control form-textarea" readonly></textarea>
+                    <label class="form-label">Descripción</label>
+                </div>
+                <div class="form-outline mb-3">
+                    <input id="verFechaAsig" class="form-control form-date" readonly />
+                    <label class="form-label">Fecha de asignación</label>
+                </div>
+                <div class="form-outline mb-3">
+                    <input id="verFechaVto" class="form-control form-date" readonly />
+                    <label class="form-label">Fecha de vencimiento</label>
+                </div>
+                <div class="form-outline mb-3">
+                    <input id="verEstado" class="form-control" readonly />
+                    <label class="form-label">Estado</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* — Token antiforgery + URL Delete para backlog-js — *@
+@Html.AntiForgeryToken()
+<script>
+    const deleteUrl = '@Url.Action("Delete","Backlog")';
+</script>
+
+@section scripts {
+    @Scripts.Render("~/bundles/kanbanBoard-js")
+}

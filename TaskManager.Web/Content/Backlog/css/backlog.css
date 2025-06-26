@@ -1,0 +1,360 @@
+﻿/* =====================================================================
+   BACKLOG.CSS  –  filtros, modales (“Crear” y “Ver”), tabla y dropdown
+   Ruta: Content/Backlog/css/backlog.css
+   ---------------------------------------------------------------------
+   • Variables globales
+   • Filtros  +  modal “Crear tarea”
+   • Tabla de tareas
+   • Tooltip
+   • Dropdown ⋮ Acciones   (compatible desktop / móvil)
+   • Modal “Ver tarea”  (campos readonly)
+   • Responsive
+===================================================================== */
+
+/* =============================================================
+   1 · VARIABLES GLOBAL
+============================================================= */
+:root {
+    --blanco: #ffffff;
+    --azul-blanco: #f5f7ff; /* filas impares  */
+    --azul-medio: #eef2ff; /* filas pares    */
+    --azul-thona: #06559b; /* corporativo    */
+    --estrella-venus: #8d8d8d; /* gris secundario*/
+}
+
+/* =============================================================
+   2 · FILTROS  +  MODALES (“CREAR” y “VER”)
+============================================================= */
+.form-outline {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1.4rem;
+}
+
+.form-control,
+.form-select {
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    height: 44px;
+    padding: .375rem 2.3rem;
+    line-height: 1.2;
+    border: 2px solid var(--azul-thona);
+    border-radius: 4px;
+    font-size: .9rem;
+    background: #fff;
+    text-align: center;
+    text-align-last: center;
+    color: #212529;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--azul-thona);
+        outline: 0;
+    }
+
+.form-select {
+    appearance: none;
+    -moz-appearance: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+    .form-select option {
+        text-align: center;
+    }
+
+        .form-select option[value=""] {
+            color: #adb5bd;
+        }
+
+.form-date {
+    padding-left: 2.3rem;
+    cursor: pointer;
+}
+
+    .form-date::-webkit-calendar-picker-indicator {
+        color: var(--azul-thona);
+        opacity: 1;
+    }
+
+    .form-date::-moz-focus-inner {
+        border: 0;
+    }
+
+.form-control.form-textarea {
+    height: auto;
+    min-height: 88px;
+    padding: .75rem 1rem;
+    text-align: left;
+    text-align-last: left;
+    resize: vertical;
+}
+
+.input-icon {
+    position: absolute;
+    left: .6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--azul-thona);
+    pointer-events: none;
+}
+
+.select-caret {
+    position: absolute;
+    right: .8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--azul-thona);
+    pointer-events: none;
+}
+
+.input-icon.calendar {
+    font-size: 1rem;
+}
+
+.form-label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    font-size: .75rem;
+    color: var(--azul-thona);
+    transition: .2s;
+    pointer-events: none;
+}
+
+.form-control:focus + .form-label,
+.form-control:not(:placeholder-shown) + .form-label,
+.form-select:focus + .form-label,
+.form-select:valid + .form-label,
+.form-date:focus + .form-label,
+.form-date:not(:placeholder-shown) + .form-label {
+    top: -.6rem;
+    transform: translateX(-50%);
+    font-size: .66rem;
+    background: #fff;
+    padding: 0 .3rem;
+}
+
+.btn-neon {
+    width: 100%;
+    height: 44px;
+    line-height: 44px;
+    border: none;
+    border-radius: 4px;
+    background: #201747;
+    color: #fff;
+    font-size: .9rem;
+    cursor: pointer;
+    transition: background .25s,transform .15s;
+}
+
+    .btn-neon:hover {
+        background: var(--azul-thona);
+    }
+
+    .btn-neon:active {
+        background: #1a154c;
+    }
+
+    .btn-neon.btn-lg {
+        height: 52px;
+        line-height: 52px;
+        font-size: 1rem;
+    }
+
+.fecha-asignacion {
+    display: none !important;
+}
+
+.section-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .45rem;
+    color: var(--azul-thona);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+    .section-title .icon-plus {
+        font-size: 1em;
+        line-height: 1;
+        color: var(--azul-thona);
+    }
+
+/* —— Campos SOLO LECTURA en el modal “Ver tarea” ——————————— */
+#verTareaModal .form-control[readonly],
+#verTareaModal .form-control[disabled] {
+    background: #f5f5f5;
+    border-color: #dcdcdc;
+    color: #6c757d;
+    cursor: default;
+    pointer-events: none;
+}
+
+#verTareaModal .form-control.form-textarea[readonly] {
+    resize: none;
+}
+
+/* =============================================================
+   3 · TABLA DE TAREAS
+============================================================= */
+.table-container {
+    padding: 20px 0;
+    margin-bottom: 200px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.table-custom {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 16px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--blanco);
+}
+
+    .table-custom thead th {
+        background: #1a1a4f;
+        color: var(--blanco);
+        padding: 15px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .table-custom td {
+        padding: 15px;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .table-custom tbody tr:nth-child(odd) td {
+        background: var(--azul-blanco);
+    }
+
+    .table-custom tbody tr:nth-child(even) td {
+        background: var(--azul-medio);
+    }
+
+    .table-custom thead th:last-child,
+    .table-custom td:last-child {
+        width: 50px;
+    }
+
+/* =============================================================
+   4 · TOOLTIP
+============================================================= */
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    background: #fff;
+    color: #000;
+    padding: 10px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    box-shadow: 0 4px 6px rgba(0,0,0,.1);
+    opacity: 0;
+    transition: opacity .3s;
+    font-size: 12px;
+    width: 200px;
+    text-align: center;
+}
+
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.icon-applied {
+    font-size: 18px;
+    color: var(--azul-thona);
+}
+
+/* =============================================================
+   5 · DROPDOWN (menú ⋮)
+============================================================= */
+.dropdown-container i {
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    display: none;
+    position: fixed;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0,0,0,.1);
+    z-index: 1000;
+    min-width: 150px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+    .dropdown-menu.show {
+        display: block;
+    }
+
+    .dropdown-menu li {
+        list-style: none;
+        padding: 10px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+        .dropdown-menu li:hover {
+            background: var(--azul-thona);
+            color: var(--blanco);
+        }
+
+        .dropdown-menu li a {
+            display: block;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .dropdown-menu li.text-muted {
+            font-style: italic;
+            background: #fff !important;
+            color: var(--estrella-venus) !important;
+            cursor: default;
+            font-size: 14px;
+            padding: 12px;
+        }
+
+/* Menú un poco más estrecho en móviles muy pequeños */
+@media(max-width:400px) {
+    .dropdown-menu {
+        min-width: 120px;
+    }
+}
+
+/* =============================================================
+   6 · RESPONSIVE
+============================================================= */
+@media(max-width:768px) {
+    .table-custom td, .table-custom th {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .tooltip-text {
+        font-size: 10px;
+        width: 150px;
+    }
+}

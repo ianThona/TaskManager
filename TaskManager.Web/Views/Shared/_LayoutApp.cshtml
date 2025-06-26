@@ -1,50 +1,54 @@
-@* -----------------------------------------------------------------------
-    File:  Views/Shared/_LayoutApp.cshtml
-    Layout usado por las p·ginas de aplicaciÛn (Backlog & Kanban board)
-    Incluye el side-menu, sus bundles y deja intactos los estilos globales.
-    --------------------------------------------------------------------- *@
+@* ---------------------------------------------------------------------------
+    File:   Views/Shared/_LayoutApp.cshtml
+    Layout base para todos los m√≥dulos ‚Äúin-app‚Äù (Backlog, Kanban-Board, ‚Ä¶)
+    -------------------------------------------------------------------------*@
+
 @using System.Web.Optimization
-@using System.Web.Mvc
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@ViewBag.Title TaskManager</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-    <!-- 1 ∑ Estilos globales -->
+    <title>@ViewBag.Title | TaskManager</title>
+
+    <!-- 1 ¬∑ CSS global (Bootstrap) -->
     @Styles.Render("~/Content/bootstrap")
 
-    <!-- 2 ∑ Icon-font para los botones del men˙ -->
+    <!-- 2 ¬∑ Icon-font (Font Awesome 6.5.1) *sin* SRI para evitar bloqueos en dev -->
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer" />
 
+    <!-- 3 ¬∑ Estilos comunes del sitio -->
     @Styles.Render("~/Content/site")
 
-    <!-- 3 ∑ Estilos del side-menu -->
+    <!-- 4 ¬∑ Estilos del side-menu -->
     @Styles.Render("~/Content/sideMenu-css")
 
-    <!-- 4 ∑ Estilos especÌficos de cada vista (opcional) -->
+    <!-- 5 ¬∑ Estilos espec√≠ficos de la vista (opcionales) -->
     @RenderSection("styles", required: false)
 </head>
 
 <body>
-    <!-- Side-menu (top-bar + barra lateral) -->
+    <!-- Top-bar + drawer lateral -->
     @Html.Partial("~/Views/Shared/Partials/_SideMenu.cshtml")
 
-    <!-- Contenido principal (padding-top para no quedar detr·s del top-bar) -->
+    <!-- Contenido principal
+         (pt-5: separa el contenido de la barra superior fija) -->
     <main class="container app-content pt-5">
         @RenderBody()
     </main>
 
-    <!-- 1 ∑ LibrerÌas compartidas (jQuery + Bootstrap bundle) -->
+    <!-- 1 ¬∑ Librer√≠as compartidas (jQuery + Bootstrap.bundle.js) -->
     @Scripts.Render("~/bundles/lib")
 
-    <!-- 2 ∑ JavaScript del side-menu -->
+    <!-- 2 ¬∑ L√≥gica del side-menu -->
     @Scripts.Render("~/bundles/sideMenu-js")
 
-    <!-- 3 ∑ Scripts especÌficos de cada vista (opcional) -->
+    <!-- 3 ¬∑ Scripts espec√≠ficos de la vista (opcionales) -->
     @RenderSection("scripts", required: false)
 </body>
 </html>
