@@ -23,7 +23,7 @@ namespace TaskManager.Web
              *  2 · Estilos globales (Bootstrap + site.css)
              *-----------------------------------------------------------*/
             bundles.Add(new StyleBundle("~/Content/bootstrap")
-                .Include("~/Content/bootstrap.min.css"));     // NUEVO
+                .Include("~/Content/bootstrap.min.css"));
 
             bundles.Add(new StyleBundle("~/Content/site")
                 .Include("~/Content/site.css"));
@@ -38,7 +38,16 @@ namespace TaskManager.Web
                 .Include("~/Content/Login/js/login.js"));
 
             /*------------------------------------------------------------
-             *  4 · Optimización siempre activa
+             *  4 · Side-menu (Backlog / Kanban board)
+             *-----------------------------------------------------------*/
+            bundles.Add(new StyleBundle("~/Content/sideMenu-css")
+                .Include("~/Content/SideMenu/css/sideMenu.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/sideMenu-js")
+                .Include("~/Content/SideMenu/js/sideMenu.js"));
+
+            /*------------------------------------------------------------
+             *  5 · Optimización siempre activa
              *-----------------------------------------------------------*/
             BundleTable.EnableOptimizations = true;
         }

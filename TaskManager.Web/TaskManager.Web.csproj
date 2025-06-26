@@ -84,9 +84,12 @@
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
     <None Include="packages.config" />
+    <Content Include="Content\images\logo-thona.png" />
     <Content Include="Content\images\thona_login.svg" />
     <Content Include="Content\Login\css\login.css" />
     <Content Include="Content\Login\js\login.js" />
+    <Content Include="Content\SideMenu\css\sideMenu.css" />
+    <Content Include="Content\SideMenu\js\sideMenu.js" />
     <Content Include="Content\site.css" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -111,6 +114,10 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Login\Login.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Backlog\Index.cshtml" />
+    <Content Include="Views\KanbanBoard\Index.cshtml" />
+    <Content Include="Views\Shared\Partials\_SideMenu.cshtml" />
+    <Content Include="Views\Shared\_LayoutApp.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -209,6 +216,8 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BacklogController.cs" />
+    <Compile Include="Controllers\KanbanBoardController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Global.asax.cs">

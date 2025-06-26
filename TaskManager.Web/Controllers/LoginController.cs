@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -9,10 +10,12 @@ namespace TaskManager.Web.Controllers
 {
     public class LoginController : Controller
     {
+        /*────────────────────────  CADENA DE CONEXIÓN  ───────────────────────*/
         private readonly string _cs =
-            ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            ConfigurationManager.ConnectionStrings["DefaultConnection"]
+                                 .ConnectionString;
 
-        /*------------------------  GET  ------------------------*/
+        /*──────────────────────────────  GET  /Login  ─────────────────────────*/
         [HttpGet]
         public ActionResult Login()
         {
@@ -21,17 +24,22 @@ namespace TaskManager.Web.Controllers
             var vm = new LoginViewModel
             {
                 UserOptions = users,
+                // Autocompleta el primer usuario (opcional)
                 Username = users.FirstOrDefault()?.Name,
                 Password = users.FirstOrDefault()?.Password
             };
 
+            // Envía al cliente un diccionario { usuario : contraseña } (opcional)
             ViewBag.UserPassJson = System.Web.Helpers.Json.Encode(
                                         users.ToDictionary(u => u.Name, u => u.Password));
+
+            // Si había una sesión anterior, la cerramos
+            Session.Abandon();
 
             return View(vm);
         }
 
-        /*------------------------  POST  -----------------------*/
+        /*──────────────────────────────  POST /Login  ─────────────────────────*/
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginViewModel model)
@@ -43,20 +51,37 @@ namespace TaskManager.Web.Controllers
             }
 
             var storedPassword = GetPassword(model.Username);
+            var ok = storedPassword != null && model.Password == storedPassword;
 
-            if (storedPassword != null && model.Password == storedPassword)
-                return RedirectToAction(nameof(LoginSuccess));
+            if (ok)
+            {
+                // Guarda datos mínimos en sesión
+                Session["Username"] = model.Username;
+                Session["LoginTime"] = DateTime.UtcNow;
 
+                // Redirige al primer módulo de la aplicación
+                return RedirectToAction("Backlog", "Task");
+            }
+
+            // Credenciales inválidas
             model.ErrorMessage = "Usuario o contraseña incorrectos";
             model.UserOptions = LoadUserOptions();
             return View(model);
         }
 
-        public ActionResult LoginSuccess() =>
-            Content("¡Has iniciado sesión correctamente!");
+        /*───────────────────────────────  GET /Logout  ────────────────────────*/
+        public ActionResult Logout()
+        {
+            Session.Abandon();                 // destruye la sesión
+            return RedirectToAction("Login");  // vuelve al formulario de login
+        }
 
-        /*--------------------  Helpers  ------------------------*/
+        /*─────────────────────  Helper opcional para AJAX  ───────────────────*/
+        /// <summary>Devuelve true/false si hay usuario logueado.</summary>
+        public JsonResult IsAuthenticated() =>
+            Json(Session["Username"] != null, JsonRequestBehavior.AllowGet);
 
+        /*───────────────────────────────  Helpers DB  ─────────────────────────*/
         private IEnumerable<UserOption> LoadUserOptions()
         {
             var list = new List<UserOption>();
@@ -64,9 +89,7 @@ namespace TaskManager.Web.Controllers
             using (var conn = new NpgsqlConnection(_cs))
             {
                 conn.Open();
-
-                const string sql =
-                    "SELECT name, password FROM public.users ORDER BY name";
+                const string sql = "SELECT name, password FROM public.users ORDER BY name";
 
                 using (var cmd = new NpgsqlCommand(sql, conn))
                 using (var rdr = cmd.ExecuteReader())
@@ -81,7 +104,7 @@ namespace TaskManager.Web.Controllers
                     }
                 }
             }
-            return list;   // IEnumerable<UserOption>
+            return list;
         }
 
         private string GetPassword(string username)
@@ -89,14 +112,12 @@ namespace TaskManager.Web.Controllers
             using (var conn = new NpgsqlConnection(_cs))
             {
                 conn.Open();
-
-                const string sql =
-                    "SELECT password FROM public.users WHERE name = @u";
+                const string sql = "SELECT password FROM public.users WHERE name = @u";
 
                 using (var cmd = new NpgsqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("u", username);
-                    return cmd.ExecuteScalar() as string; // null si no existe
+                    return cmd.ExecuteScalar() as string;  // null si no existe
                 }
             }
         }

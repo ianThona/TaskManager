@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿/*  App_Start/RouteConfig.cs  */
+
+using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace TaskManager.Web
@@ -7,10 +9,32 @@ namespace TaskManager.Web
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
-            // Ignorar los .axd (trazas, web resources, etc.)
+            /*------------------------------------------------------------
+             *  Ignorar trazas y web-resources (*.axd)
+             *-----------------------------------------------------------*/
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            // Ruta por defecto: ahora va a /Login/Login
+            /*------------------------------------------------------------
+             *  1 · Rutas específicas de Task
+             *-----------------------------------------------------------*/
+
+            //  /Task/Backlog            → BacklogController.Index
+            routes.MapRoute(
+                name: "TaskBacklog",
+                url: "Task/Backlog",
+                defaults: new { controller = "Backlog", action = "Index" }
+            );
+
+            //  /Task/KanbanBoard        → KanbanBoardController.Index
+            routes.MapRoute(
+                name: "TaskKanbanBoard",
+                url: "Task/KanbanBoard",
+                defaults: new { controller = "KanbanBoard", action = "Index" }
+            );
+
+            /*------------------------------------------------------------
+             *  2 · Ruta por defecto (login)
+             *-----------------------------------------------------------*/
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
