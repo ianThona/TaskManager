@@ -1,0 +1,73 @@
+﻿@* -----------------------------------------------------------------------
+       Views/Shared/Partials/_SideMenu.cshtml
+       Top-bar + barra lateral para las páginas “app” (Backlog, Kanban…)
+       – Requiere:  sideMenu.css  +  sideMenu.js
+       – Font Awesome 6 ya se carga en _LayoutApp.cshtml
+    --------------------------------------------------------------------- *@
+@using System.Web.Mvc
+
+@{
+    /*---------------------------------------------------------------
+      Nombre del usuario guardado en sesión (LoginController)
+      -------------------------------------------------------------*/
+    var uname = (Session["Username"] as string) ?? "ichavez";
+}
+
+<!-- ═════════════════════  TOP-BAR  ═════════════════════ -->
+<header id="topbar">
+    <!-- 1)  Botón “hamburger” -->
+    <button id="menu-toggle" class="btn btn-link p-0">
+        <i class="fa fa-bars fa-lg text-white"></i>
+    </button>
+
+    <!-- 2)  Logo corporativo -->
+    <div class="logo ms-3">
+        <a href="@Url.Action("Backlog", "Task")" class="d-inline-block">
+            <img src="@Url.Content("~/Content/images/logo-thona.png")"
+                 alt="Thona Seguros logo" />
+        </a>
+    </div>
+
+    <!-- 3)  Badge con nombre + popup -->
+    <div class="user-icon ms-auto me-3" id="user-icon">
+        <!-- pill que actúa de disparador -->
+        <span class="user-badge">@uname</span>
+
+        <!-- ▼ Menú desplegable -->
+        <div class="user-menu" id="user-menu">
+            <ul class="list-unstyled">
+                <li class="menu-button">
+                    <a href="@Url.Action("Logout", "Login")"
+                       class="btn btn-outline-danger w-75 d-inline-flex
+                              align-items-center justify-content-center">
+                        <i class="fa-solid fa-right-from-bracket me-2"></i>
+                        Cerrar sesión
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<!-- ═════════════════  SIDE-BAR (collapsible)  ════════════════ -->
+<aside id="sidebar" aria-label="Main navigation">
+    <ul class="list-unstyled mb-0">
+        <!-- Backlog -->
+        <li>
+            <a href="@Url.Action("Backlog", "Task")"
+               class="text-white d-flex align-items-center px-3 py-2">
+                <i class="fa fa-list-ul me-2"></i>
+                <span>Backlog</span>
+            </a>
+        </li>
+
+        <!-- Kanban board -->
+        <li>
+            <a href="@Url.Action("KanbanBoard", "Task")"
+               class="text-white d-flex align-items-center px-3 py-2">
+                <i class="fa fa-columns me-2"></i>
+                <span>Kanban board</span>
+            </a>
+        </li>
+    </ul>
+</aside>
